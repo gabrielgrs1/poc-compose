@@ -26,25 +26,28 @@ import com.gabrielgrs1.poccompose.ui.theme.POCComposeTheme
 
 @Composable
 fun ProductSection(title: String, productList: List<Product>, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        Text(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-            text = title,
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontFamily = FontFamily(Font(R.font.inter_regular)),
-                fontWeight = FontWeight(400),
+    if (productList.isNotEmpty()) {
+
+        Column(modifier = modifier) {
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                text = title,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontFamily = FontFamily(Font(R.font.inter_regular)),
+                    fontWeight = FontWeight(400),
+                )
             )
-        )
-        LazyRow(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
-        ) {
-            items(productList) { product ->
-                ProductItem(product = product)
+            LazyRow(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(productList) { product ->
+                    ProductItem(product = product)
+                }
             }
         }
     }

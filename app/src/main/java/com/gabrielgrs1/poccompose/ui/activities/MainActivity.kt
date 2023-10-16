@@ -16,13 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gabrielgrs1.poccompose.dao.ProductDao
-import com.gabrielgrs1.poccompose.sampledata.sampleCandies
-import com.gabrielgrs1.poccompose.sampledata.sampleDrinks
 import com.gabrielgrs1.poccompose.sampledata.sampleSections
 import com.gabrielgrs1.poccompose.ui.screens.HomeScreen
+import com.gabrielgrs1.poccompose.ui.screens.HomeScreenUiState
 import com.gabrielgrs1.poccompose.ui.theme.POCComposeTheme
 
 class MainActivity : ComponentActivity() {
+
 
     private val dao = ProductDao()
 
@@ -32,13 +32,9 @@ class MainActivity : ComponentActivity() {
             App(onFabClick = {
                 startActivity(Intent(this, ProductFormActivity::class.java))
             }) {
-                val sections = mapOf(
-                    "Todos produtos" to dao.products(),
-                    "Promoções" to sampleDrinks + sampleCandies,
-                    "Doces" to sampleCandies,
-                    "Bebidas" to sampleDrinks,
-                )
-                HomeScreen(sections)
+                val products = dao.products()
+
+                HomeScreen(products = products)
             }
         }
     }
@@ -67,6 +63,6 @@ fun App(onFabClick: () -> Unit = {}, content: @Composable () -> Unit = {}) {
 @Composable
 fun AppPreview() {
     App {
-        HomeScreen(sections = sampleSections)
+        HomeScreen(HomeScreenUiState(sections = sampleSections))
     }
 }
