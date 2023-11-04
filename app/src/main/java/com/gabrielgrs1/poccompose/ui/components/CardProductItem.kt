@@ -1,6 +1,7 @@
 package com.gabrielgrs1.poccompose.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +13,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -30,12 +35,17 @@ import java.math.BigDecimal
 fun CardProductItem(
     product: Product,
     modifier: Modifier = Modifier,
-    elevation: Dp = 4.dp
+    elevation: Dp = 4.dp,
+    isExpanded: Boolean = false
 ) {
+    var expanded by rememberSaveable {
+        mutableStateOf(isExpanded)
+    }
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(150.dp),
+            .heightIn(150.dp)
+            .clickable { expanded = expanded.not() },
         elevation = CardDefaults.cardElevation(defaultElevation = elevation)
     ) {
         Column {
@@ -61,12 +71,14 @@ fun CardProductItem(
                     text = product.price.toBrazilianCurrency()
                 )
             }
-            product.description?.let { description ->
-                Text(
-                    text = description,
-                    Modifier
-                        .padding(16.dp)
-                )
+            if (expanded) {
+                product.description?.let { description ->
+                    Text(
+                        text = description,
+                        Modifier
+                            .padding(16.dp)
+                    )
+                }
             }
         }
     }
@@ -98,6 +110,7 @@ private fun CardProductItemDescriptionPreview() {
                     price = BigDecimal("9.99"),
                     description = LoremIpsum(50).values.first()
                 ),
+                isExpanded = true
             )
         }
     }
