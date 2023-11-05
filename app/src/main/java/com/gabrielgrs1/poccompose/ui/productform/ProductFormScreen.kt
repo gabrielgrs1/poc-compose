@@ -1,4 +1,4 @@
-package com.gabrielgrs1.poccompose.ui.screens
+package com.gabrielgrs1.poccompose.ui.productform
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

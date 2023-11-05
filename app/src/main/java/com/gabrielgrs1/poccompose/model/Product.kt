@@ -1,5 +1,6 @@
 package com.gabrielgrs1.poccompose.model
 
+import android.os.Parcelable
 import java.math.BigDecimal
 
 data class Product(
