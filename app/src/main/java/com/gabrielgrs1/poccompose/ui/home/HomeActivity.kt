@@ -1,4 +1,4 @@
-package com.gabrielgrs1.poccompose.ui.activities
+package com.gabrielgrs1.poccompose.ui.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,14 +16,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.gabrielgrs1.poccompose.dao.ProductDao
 import com.gabrielgrs1.poccompose.sampledata.sampleSections
-import com.gabrielgrs1.poccompose.ui.home.HomeScreen
-import com.gabrielgrs1.poccompose.ui.home.HomeUiState
-import com.gabrielgrs1.poccompose.ui.home.HomeScreenViewModel
+import com.gabrielgrs1.poccompose.ui.productform.ProductFormActivity
 import com.gabrielgrs1.poccompose.ui.theme.POCComposeTheme
 
-class MainActivity : ComponentActivity() {
+class HomeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

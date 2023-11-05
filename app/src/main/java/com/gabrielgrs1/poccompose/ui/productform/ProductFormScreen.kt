@@ -15,11 +15,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -31,12 +28,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.gabrielgrs1.poccompose.R
-import com.gabrielgrs1.poccompose.model.Product
-import java.math.BigDecimal
-import java.text.DecimalFormat
 
 @Composable
-fun ProductFormScreen(onSaveClick: (Product) -> Unit = {}) {
+fun ProductFormScreen(
+    viewModel: ProductFormScreenViewModel,
+    onSaveClick: () -> Unit = {}
+) {
+    val state by viewModel.uiState.collectAsState()
+    ProductFormScreen(
+        state = state,
+        onSaveClick = {
+            viewModel.save()
+            onSaveClick()
+        }
+    )
+}
+
+@Composable
+fun ProductFormScreen(
+    state: ProductFormUiState = ProductFormUiState(),
+    onSaveClick: () -> Unit = {}
+) {
     Column(
         Modifier
             .fillMaxSize()
@@ -44,28 +56,12 @@ fun ProductFormScreen(onSaveClick: (Product) -> Unit = {}) {
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        var name by rememberSaveable {
-            mutableStateOf("")
-        }
-        var imageUrl by rememberSaveable {
-            mutableStateOf("")
-        }
-        var price by rememberSaveable {
-            mutableStateOf("")
-        }
-        var description by rememberSaveable {
-            mutableStateOf("")
-        }
-        val formatter = remember {
-            DecimalFormat("#,##")
-        }
-
         Spacer(modifier = Modifier)
         Text(text = "Criando o produto", Modifier.fillMaxWidth(), fontSize = 28.sp)
 
-        if (imageUrl.isNotBlank()) {
+        if (state.isShowPreview) {
             AsyncImage(
-                model = imageUrl,
+                model = state.imageUrl,
                 contentDescription = "preview imagem",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -76,65 +72,69 @@ fun ProductFormScreen(onSaveClick: (Product) -> Unit = {}) {
             )
         }
 
-        TextField(value = imageUrl, onValueChange = {
-            imageUrl = it
-        }, modifier = Modifier.fillMaxWidth(), label = {
-            Text(text = "Url da imagem")
-        }, keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Uri, imeAction = ImeAction.Next
-        )
-        )
-
-        TextField(value = name, onValueChange = {
-            name = it
-        }, modifier = Modifier.fillMaxWidth(), label = {
-            Text(text = "Nome")
-        }, keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Next,
-            capitalization = KeyboardCapitalization.Words
-        )
-        )
-
-        TextField(value = price, onValueChange = {
-            try {
-                price = formatter.format(BigDecimal(it))
-            } catch (e: IllegalArgumentException) {
-                if (it.isBlank()) {
-                    price = ""
-                }
-            }
-        }, modifier = Modifier.fillMaxWidth(), label = {
-            Text(text = "Preço")
-        }, keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next
-        )
+        TextField(
+            value = state.imageUrl,
+            onValueChange = {
+                state.onUrlChange(it)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = {
+                Text(text = "Url da imagem")
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Uri,
+                imeAction = ImeAction.Next
+            )
         )
 
         TextField(
-            value = description, onValueChange = {
-                description = it
-            }, modifier = Modifier
+            value = state.name,
+            onValueChange = {
+                state.onNameChange(it)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = {
+                Text(text = "Nome")
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
+            )
+        )
+
+        TextField(
+            value = state.price,
+            onValueChange = {
+                state.onPriceChange(it)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = {
+                Text(text = "Preço")
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next
+            )
+        )
+
+        TextField(
+            value = state.description,
+            onValueChange = {
+                state.onDescriptionChange(it)
+            },
+            modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(100.dp), label = {
+                .heightIn(100.dp),
+            label = {
                 Text(text = "Descrição")
-            }, keyboardOptions = KeyboardOptions(
+            },
+            keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text
             )
         )
 
         Button(onClick = {
-            val convertedPrice = try {
-                BigDecimal(price)
-            } catch (e: NumberFormatException) {
-                BigDecimal.ZERO
-            }
-
-            val product = Product(
-                name = name, price = convertedPrice, imageUrl = imageUrl, description = description
-            )
-
-            onSaveClick(product)
+            onSaveClick()
         }) {
             Text(text = "Salvar")
         }
