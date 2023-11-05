@@ -10,7 +10,6 @@ import com.gabrielgrs1.poccompose.ui.theme.POCComposeTheme
 
 class ProductFormActivity : ComponentActivity() {
 
-    private val dao = ProductDao()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
