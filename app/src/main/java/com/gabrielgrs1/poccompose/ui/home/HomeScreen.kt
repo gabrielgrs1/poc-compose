@@ -9,18 +9,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gabrielgrs1.poccompose.model.Product
-import com.gabrielgrs1.poccompose.sampledata.sampleCandies
-import com.gabrielgrs1.poccompose.sampledata.sampleDrinks
-import com.gabrielgrs1.poccompose.sampledata.sampleProducts
 import com.gabrielgrs1.poccompose.sampledata.sampleSections
 import com.gabrielgrs1.poccompose.ui.components.CardProductItem
 import com.gabrielgrs1.poccompose.ui.components.ProductSection
@@ -31,7 +24,8 @@ import com.gabrielgrs1.poccompose.ui.theme.POCComposeTheme
 fun HomeScreen(
     viewModel: HomeScreenViewModel,
 ) {
-    HomeScreen(viewModel.uiState)
+    val state by viewModel.uiState.collectAsState()
+    HomeScreen(state)
 }
 
 @Composable
